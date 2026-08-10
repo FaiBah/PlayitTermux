@@ -5,7 +5,7 @@ Install and update [playit.gg](https://playit.gg) (`playitd` + `playit-cli`) on 
 ## Usage
 
 ```bash
-curl -sL https://raw.githubusercontent.com/FaiBah/playit-termux-installer/main/playit/install.sh | bash
+curl -sL https://raw.githubusercontent.com/FaiBah/playit-termux-installer/main/install.sh | bash
 ```
 
 Run it again any time to update — it detects an existing install, stops `playitd` if running, and reinstalls via `pkg`.
