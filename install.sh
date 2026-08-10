@@ -268,24 +268,20 @@ EOF
 chmod +x "$PLAYIT_BIN/update-playit"
 
 # ------------------------------------------
-# Add ~/playit/bin to PATH
+# Add ~/playit/bin to PATH (idempotent)
 # ------------------------------------------
 
-case ":$PATH:" in
-    *":$PLAYIT_BIN:"*)
-        ;;
-    *)
-        echo "export PATH=\"\$HOME/playit/bin:\$PATH\"" >> "$HOME/.bashrc"
-        export PATH="$PLAYIT_BIN:$PATH"
-        ;;
-esac
+if ! grep -qF 'export PATH="$HOME/playit/bin:$PATH"' "$HOME/.bashrc" 2>/dev/null; then
+    echo 'export PATH="$HOME/playit/bin:$PATH"' >> "$HOME/.bashrc"
+fi
+export PATH="$PLAYIT_BIN:$PATH"
 
 # ------------------------------------------
-# Add 'playit' alias to launch start-playit
+# Add 'playit' alias to launch start-playit (idempotent)
 # ------------------------------------------
 
-if ! grep -q "alias playit=" "$HOME/.bashrc" 2>/dev/null; then
-    echo "alias playit=\"\$HOME/playit/bin/start-playit\"" >> "$HOME/.bashrc"
+if ! grep -qF 'alias playit="$HOME/playit/bin/start-playit"' "$HOME/.bashrc" 2>/dev/null; then
+    echo 'alias playit="$HOME/playit/bin/start-playit"' >> "$HOME/.bashrc"
 fi
 alias playit="$PLAYIT_BIN/start-playit"
 
