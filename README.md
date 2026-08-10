@@ -1,22 +1,22 @@
-# 🎮 Playit.gg Termux Installer
+# Playit.gg Termux Installer
 
-One-command install and update for [playit.gg](https://playit.gg) on Termux. Everything lives in a single `~/playit` folder.
+A setup script for installing, updating, and managing [playit.gg](https://playit.gg) on Termux. It automates package installation, consolidates configuration and logs under a single `~/playit` directory, and provides simple commands for daily use.
 
 ---
 
-## 🚀 Install
+## Install
 
 ```bash
 curl -sL https://raw.githubusercontent.com/FaiBah/playit-termux-installer/main/install.sh | bash
 ```
 
-## ▶️ Run
+## Run
 
 ```bash
 playit
 ```
 
-## 🔄 Update
+## Update
 
 ```bash
 update-playit
@@ -24,7 +24,7 @@ update-playit
 
 ---
 
-## 📁 Layout
+## Layout
 
 ```
 ~/playit/
@@ -36,7 +36,7 @@ update-playit
     └── update-playit
 ```
 
-## 📋 Commands
+## Commands
 
 | Command | Action |
 |---|---|
@@ -47,7 +47,7 @@ update-playit
 
 ---
 
-## 🗑️ Uninstall
+## Uninstall
 
 ```bash
 stop-playit
@@ -58,10 +58,10 @@ sed -i '/playit\/bin/d; /alias playit=/d' ~/.bashrc
 
 ---
 
-## ✅ Requirements
+## Requirements
 
 - Termux
 
-## 📄 License
+## License
 
 MIT
