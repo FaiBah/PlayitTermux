@@ -212,26 +212,4 @@ echo
 echo "Commands (restart Termux or 'source ~/.bashrc' to pick up PATH/alias):"
 echo "  playit | start-playit | stop-playit | update-playit"
 echo
-
-# ------------------------------------------
-# Start now
-# ------------------------------------------
-
-read -r -p "Start Playit now? [Y/n]: " ANSWER
-
-if [ "$ANSWER" = "n" ] || [ "$ANSWER" = "N" ]; then
-    info "Finished without starting Playit."
-else
-    if pgrep -x playitd >/dev/null 2>&1; then
-        warning "playitd is already running."
-    else
-        nohup playitd > "$PLAYIT_LOG" 2>&1 &
-        sleep 2
-    fi
-
-    playit-cli
-
-    if [ -f "$REAL_CONFIG" ]; then
-        ln -sf "$REAL_CONFIG" "$PLAYIT_CONFIG"
-    fi
-fi
+info "Run 'playit' to start the daemon and CLI."
