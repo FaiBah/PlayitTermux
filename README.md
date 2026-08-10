@@ -1,53 +1,77 @@
 # Playit.gg Termux Installer
 
-Install and update [playit.gg](https://playit.gg) (`playitd` + `playit-cli`) on Termux with one script. All runtime data (config, logs, helper scripts) lives in a single `~/playit` folder on the device.
+A single-script installer and updater for running [playit.gg](https://playit.gg) (`playitd` + `playit-cli`) on Termux, with all runtime data organized under one `~/playit` folder.
 
-## Usage
+## Features
+
+- One-command install and update — the script detects which one you need
+- Clean, self-contained layout: config, logs, and helper scripts all live under `~/playit`
+- Simple `playit` alias to launch the daemon and CLI from anywhere in Termux
+- Safe to re-run at any time to update to the latest version
+
+## Installation
 
 ```bash
 curl -sL https://raw.githubusercontent.com/FaiBah/playit-termux-installer/main/install.sh | bash
 ```
 
-Run it again any time to update — it detects an existing install, stops `playitd` if running, and reinstalls via `pkg`.
+This installs `playitd` and `playit-cli`, sets up helper scripts, and adds a `playit` alias to your shell.
 
-## Layout on device (`~/playit`)
+## Usage
+
+After installation, restart Termux (or run `source ~/.bashrc`), then simply run:
+
+```bash
+playit
+```
+
+This starts the Playit daemon and opens the CLI.
+
+## Updating
+
+Run the same install command again, or use the built-in updater:
+
+```bash
+update-playit
+```
+
+The script detects your existing installation, stops the daemon if it's running, and reinstalls the latest version.
+
+## Layout on Device
 
 ```
 ~/playit/
-├── config.toml       # symlink -> ~/.config/playit_gg/playit.toml
-├── playitd.log       # daemon log
+├── config.toml
+├── playitd.log
 └── bin/
     ├── start-playit
     ├── stop-playit
     └── update-playit
 ```
 
-`playit-cli`/`playitd` always write their real config to `~/.config/playit_gg/playit.toml` (they ignore config-path flags), so the script keeps `~/playit/config.toml` as a symlink pointing at that real file — you can edit/view it from either path and it's the same file. Logs and helper scripts are physically stored in `~/playit`.
-
-If you're upgrading from an older install that kept `config.toml` / `playitd.log` directly in `$HOME`, the script auto-migrates them.
-
-## What it does
-
-- Detects device architecture (arm64, arm, x86_64, x86)
-- Updates Termux packages
-- Installs the TUR repository if missing
-- Installs/updates `playit` via `pkg`
-- Verifies `playitd` and `playit-cli` are on `PATH`
-- Creates `~/playit` with `config.toml`, `playitd.log`, and `bin/` helper scripts
-- Adds `~/playit/bin` to `PATH`
-- Optionally starts Playit immediately after install/update
-
 ## Commands
 
 | Command | Purpose |
 |---|---|
-| `start-playit` | Starts `playitd` (using `~/playit/config.toml` if present) and opens `playit-cli` |
+| `playit` | Quick alias to start the daemon and CLI |
+| `start-playit` | Starts `playitd` and opens `playit-cli` |
 | `stop-playit` | Stops `playitd` |
 | `update-playit` | Re-downloads and runs the latest installer |
 
+## What the Installer Does
+
+- Detects device architecture (arm64, arm, x86_64, x86)
+- Updates Termux packages
+- Installs the TUR repository if missing
+- Installs or updates `playit` via `pkg`
+- Verifies `playitd` and `playit-cli` are available
+- Creates `~/playit` with helper scripts and log/config storage
+- Adds `~/playit/bin` to `PATH` and a `playit` alias to your shell profile
+- Optionally starts Playit immediately after install or update
+
 ## Requirements
 
-- Termux (this script exits if not run inside Termux)
+- Termux (the script exits if not run inside Termux)
 
 ## License
 

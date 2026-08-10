@@ -262,7 +262,7 @@ chmod +x "$PLAYIT_BIN/stop-playit"
 cat > "$PLAYIT_BIN/update-playit" <<'EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 # Re-downloads and runs the latest installer/updater script.
-curl -sL https://raw.githubusercontent.com/FaiBah/playit-termux-installer/main/playit/install.sh | bash
+curl -sL https://raw.githubusercontent.com/FaiBah/playit-termux-installer/main/install.sh | bash
 EOF
 
 chmod +x "$PLAYIT_BIN/update-playit"
@@ -279,6 +279,15 @@ case ":$PATH:" in
         export PATH="$PLAYIT_BIN:$PATH"
         ;;
 esac
+
+# ------------------------------------------
+# Add 'playit' alias to launch start-playit
+# ------------------------------------------
+
+if ! grep -q "alias playit=" "$HOME/.bashrc" 2>/dev/null; then
+    echo "alias playit=\"\$HOME/playit/bin/start-playit\"" >> "$HOME/.bashrc"
+fi
+alias playit="$PLAYIT_BIN/start-playit"
 
 # ------------------------------------------
 # Finish
@@ -299,9 +308,12 @@ echo "  Config: $PLAYIT_CONFIG (symlink to $REAL_CONFIG)"
 echo "  Logs:   $PLAYIT_LOG"
 echo "  Helper scripts: $PLAYIT_BIN"
 echo
-echo "Commands (restart Termux or 'source ~/.bashrc' to pick up PATH):"
+echo "Commands (restart Termux or 'source ~/.bashrc' to pick up PATH/alias):"
 echo
-echo "  Start:"
+echo "  Start (short alias):"
+echo "    playit"
+echo
+echo "  Start (full command):"
 echo "    start-playit"
 echo
 echo "  Stop:"
