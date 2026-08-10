@@ -14,7 +14,7 @@ Run it again any time to update — it detects an existing install, stops `playi
 
 ```
 ~/playit/
-├── config.toml       # playit config (created by playit-cli on first login)
+├── config.toml       # symlink -> ~/.config/playit_gg/playit.toml
 ├── playitd.log       # daemon log
 └── bin/
     ├── start-playit
@@ -22,7 +22,9 @@ Run it again any time to update — it detects an existing install, stops `playi
     └── update-playit
 ```
 
-If you're upgrading from an older install that kept `config.toml` / `playitd.log` directly in `$HOME`, the script auto-migrates them into `~/playit`.
+`playit-cli`/`playitd` always write their real config to `~/.config/playit_gg/playit.toml` (they ignore config-path flags), so the script keeps `~/playit/config.toml` as a symlink pointing at that real file — you can edit/view it from either path and it's the same file. Logs and helper scripts are physically stored in `~/playit`.
+
+If you're upgrading from an older install that kept `config.toml` / `playitd.log` directly in `$HOME`, the script auto-migrates them.
 
 ## What it does
 

@@ -174,12 +174,30 @@ info "Playit CLI:"
 playit-cli --version 2>/dev/null || true
 
 # ------------------------------------------
-# Migrate old config/log if they exist elsewhere
+# Link playit's real config into ~/playit
+# playit-cli/playitd ignore --config and always
+# write to ~/.config/playit_gg/playit.toml, so we
+# symlink that real file into ~/playit instead.
 # ------------------------------------------
 
-if [ -f "$HOME/config.toml" ] && [ ! -f "$PLAYIT_CONFIG" ]; then
-    info "Moving existing config.toml into $PLAYIT_DIR..."
-    mv "$HOME/config.toml" "$PLAYIT_CONFIG"
+REAL_CONFIG_DIR="$HOME/.config/playit_gg"
+REAL_CONFIG="$REAL_CONFIG_DIR/playit.toml"
+
+mkdir -p "$REAL_CONFIG_DIR"
+
+if [ -f "$HOME/config.toml" ] && [ ! -e "$REAL_CONFIG" ]; then
+    info "Moving legacy config.toml into $REAL_CONFIG_DIR..."
+    mv "$HOME/config.toml" "$REAL_CONFIG"
+fi
+
+if [ -f "$PLAYIT_CONFIG" ] && [ ! -L "$PLAYIT_CONFIG" ] && [ ! -e "$REAL_CONFIG" ]; then
+    info "Moving existing $PLAYIT_CONFIG to real location..."
+    mv "$PLAYIT_CONFIG" "$REAL_CONFIG"
+fi
+
+# (Re)create the symlink so ~/playit/config.toml always points at the real file
+if [ -e "$REAL_CONFIG" ] || [ -L "$PLAYIT_CONFIG" ]; then
+    ln -sf "$REAL_CONFIG" "$PLAYIT_CONFIG"
 fi
 
 if [ -f "$HOME/playitd.log" ] && [ ! -f "$PLAYIT_LOG" ]; then
@@ -203,11 +221,7 @@ if pgrep -x playitd >/dev/null 2>&1; then
     echo "Playit daemon is already running."
 else
     echo "Starting Playit daemon..."
-    if [ -f "\$PLAYIT_CONFIG" ]; then
-        nohup playitd --config "\$PLAYIT_CONFIG" > "\$PLAYIT_LOG" 2>&1 &
-    else
-        nohup playitd > "\$PLAYIT_LOG" 2>&1 &
-    fi
+    nohup playitd > "\$PLAYIT_LOG" 2>&1 &
     sleep 2
 fi
 
@@ -221,7 +235,13 @@ echo "Config file: \$PLAYIT_CONFIG"
 
 echo
 echo "Starting Playit CLI..."
-playit-cli --config "$PLAYIT_CONFIG"
+playit-cli
+
+# Re-link config in ~/playit in case CLI just created it
+REAL_CONFIG="\$HOME/.config/playit_gg/playit.toml"
+if [ -f "\$REAL_CONFIG" ]; then
+    ln -sf "\$REAL_CONFIG" "\$PLAYIT_CONFIG"
+fi
 EOF
 
 chmod +x "$PLAYIT_BIN/start-playit"
@@ -275,7 +295,7 @@ echo -e "${GREEN}==========================================${RESET}"
 echo
 
 echo "All Playit data lives in: $PLAYIT_DIR"
-echo "  Config: $PLAYIT_CONFIG"
+echo "  Config: $PLAYIT_CONFIG (symlink to $REAL_CONFIG)"
 echo "  Logs:   $PLAYIT_LOG"
 echo "  Helper scripts: $PLAYIT_BIN"
 echo
@@ -291,7 +311,7 @@ echo "  Update:"
 echo "    update-playit"
 echo
 echo "  Manual daemon:"
-echo "    playitd --config $PLAYIT_CONFIG &"
+echo "    playitd &"
 echo
 echo "  CLI:"
 echo "    playit-cli"
@@ -315,11 +335,7 @@ case "$ANSWER" in
         if pgrep -x playitd >/dev/null 2>&1; then
             warning "playitd is already running."
         else
-            if [ -f "$PLAYIT_CONFIG" ]; then
-                nohup playitd --config "$PLAYIT_CONFIG" > "$PLAYIT_LOG" 2>&1 &
-            else
-                nohup playitd > "$PLAYIT_LOG" 2>&1 &
-            fi
+            nohup playitd > "$PLAYIT_LOG" 2>&1 &
             sleep 2
         fi
 
@@ -327,6 +343,11 @@ case "$ANSWER" in
         info "Opening Playit CLI..."
         echo
 
-        playit-cli --config "$PLAYIT_CONFIG"
+        playit-cli
+
+        # Re-link config in case first login just created it
+        if [ -f "$REAL_CONFIG" ]; then
+            ln -sf "$REAL_CONFIG" "$PLAYIT_CONFIG"
+        fi
         ;;
 esac
