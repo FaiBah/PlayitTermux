@@ -221,7 +221,7 @@ echo "Config file: \$PLAYIT_CONFIG"
 
 echo
 echo "Starting Playit CLI..."
-playit-cli
+playit-cli --config "$PLAYIT_CONFIG"
 EOF
 
 chmod +x "$PLAYIT_BIN/start-playit"
@@ -327,6 +327,6 @@ case "$ANSWER" in
         info "Opening Playit CLI..."
         echo
 
-        playit-cli
+        playit-cli --config "$PLAYIT_CONFIG"
         ;;
 esac
