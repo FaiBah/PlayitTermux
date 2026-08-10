@@ -47,6 +47,17 @@ update-playit
 
 ---
 
+## 🗑️ Uninstall
+
+```bash
+stop-playit
+pkg uninstall playit -y
+rm -rf ~/playit ~/.config/playit_gg
+sed -i '/playit\/bin/d; /alias playit=/d' ~/.bashrc
+```
+
+---
+
 ## ✅ Requirements
 
 - Termux

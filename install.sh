@@ -58,7 +58,9 @@ success "playitd and playit-cli installed."
 # Migrate legacy config/log locations
 [ -f "$HOME/config.toml" ] && [ ! -e "$REAL_CONFIG" ] && mv "$HOME/config.toml" "$REAL_CONFIG"
 [ -f "$PLAYIT_CONFIG" ] && [ ! -L "$PLAYIT_CONFIG" ] && [ ! -e "$REAL_CONFIG" ] && mv "$PLAYIT_CONFIG" "$REAL_CONFIG"
-[ -e "$REAL_CONFIG" ] || [ -L "$PLAYIT_CONFIG" ] && ln -sf "$REAL_CONFIG" "$PLAYIT_CONFIG"
+if [ -e "$REAL_CONFIG" ] || [ -L "$PLAYIT_CONFIG" ]; then
+    ln -sf "$REAL_CONFIG" "$PLAYIT_CONFIG"
+fi
 [ -f "$HOME/playitd.log" ] && [ ! -f "$PLAYIT_LOG" ] && mv "$HOME/playitd.log" "$PLAYIT_LOG"
 
 # Helper scripts
@@ -104,7 +106,6 @@ export PATH="$PLAYIT_BIN:$PATH"
 
 grep -qF 'alias playit="$HOME/playit/bin/start-playit"' "$HOME/.bashrc" 2>/dev/null || \
     echo 'alias playit="$HOME/playit/bin/start-playit"' >> "$HOME/.bashrc"
-alias playit="$PLAYIT_BIN/start-playit"
 
 echo
 success "$([ "$MODE" = "update" ] && echo "Update" || echo "Installation") complete!"
@@ -114,16 +115,17 @@ echo "Commands: playit | start-playit | stop-playit | update-playit"
 echo
 
 read -r -p "Start Playit now? [Y/n]: " ANSWER
-case "$ANSWER" in
-    n|N) info "Done." ;;
-    *)
-        if pgrep -x playitd >/dev/null 2>&1; then
-            warning "playitd is already running."
-        else
-            nohup playitd > "$PLAYIT_LOG" 2>&1 &
-            sleep 2
-        fi
-        playit-cli
-        [ -f "$REAL_CONFIG" ] && ln -sf "$REAL_CONFIG" "$PLAYIT_CONFIG"
-        ;;
-esac
+if [ "$ANSWER" = "n" ] || [ "$ANSWER" = "N" ]; then
+    info "Done."
+else
+    if pgrep -x playitd >/dev/null 2>&1; then
+        warning "playitd is already running."
+    else
+        nohup playitd > "$PLAYIT_LOG" 2>&1 &
+        sleep 2
+    fi
+    playit-cli
+    if [ -f "$REAL_CONFIG" ]; then
+        ln -sf "$REAL_CONFIG" "$PLAYIT_CONFIG"
+    fi
+fi
