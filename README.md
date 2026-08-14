@@ -1,5 +1,4 @@
 <div align="center">
-
 # 🎮 PlayitTermux
 
 **Run the [Playit.gg](https://playit.gg) agent on Android — no root required.**
@@ -169,4 +168,4 @@ This project is an independent installer/wrapper script and is **not officially 
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License**
