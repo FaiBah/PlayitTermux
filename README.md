@@ -109,12 +109,6 @@ After installation, the following layout is created inside the Debian PRoot:
 
 ---
 
-## ⚠️ Disclaimer
-
-This project is an independent installer/wrapper script and is **not officially affiliated with or endorsed by Playit.gg**. All Playit binaries are downloaded directly from the [official Playit GitHub releases](https://github.com/playit-cloud/playit-agent). Use in accordance with Playit's terms of service.
-
----
-
 ## 🗑️ Uninstallation
 
 To completely remove PlayitTermux and all its components, follow these steps.
@@ -164,6 +158,12 @@ pkg uninstall -y proot-distro
 which pt        # should return nothing
 pt start        # should return "command not found"
 ```
+
+---
+
+## ⚠️ Disclaimer
+
+This project is an independent installer/wrapper script and is **not officially affiliated with or endorsed by Playit.gg**. All Playit binaries are downloaded directly from the [official Playit GitHub releases](https://github.com/playit-cloud/playit-agent). Use in accordance with Playit's terms of service.
 
 ---
 
